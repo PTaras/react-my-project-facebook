@@ -12,10 +12,10 @@ export default class Composer extends Component {
             <section className = { Styles.composer } >
                     <img src = { avatar } />
                     <form>
-                        <textarea placeholder = { 'hnh, {currentUserFirstName} ' } />
+                        <textarea placeholder = { 'hnh, ${currentUserFirstName} ' } />
                         <input type = 'submit' value = 'Sent' />
                     </form> 
             </section>
-        )
+        );
     }
 }

@@ -8,23 +8,22 @@ import Post from 'components/Post';
 
 //Instruments
 import Styles from './styles.m.css';
-
 export default class Feed extends Component {
     render () {
         const {
-            currentUserFirstName,
             avatar,
+            currentUserFirstName,
         } = this.props;
 
         return (
             <section className = { Styles.feed }>
-                <StatusBar />
-                <Composer
+                <StatusBar { ...this.props } />
+                <Composer 
                     avatar = { avatar }
                     currentUserFirstName = { currentUserFirstName }
                 />
-                <Post { ...this.props }/>
+                <Post { ...this.props } />
             </section>
-        )
+        );
     }
 }
