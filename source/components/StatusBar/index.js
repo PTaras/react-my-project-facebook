@@ -6,6 +6,12 @@ import Styles from './styles.m.css';
 
 export default class StatusBar extends Component {
     render () {
-        return <section className = { Styles.StatusBar } />;
+        return <section className = { Styles.statusBar } />;
+            <button>
+                <img src = { avatar } />
+                <span>gomer</span>
+                &nbsp;
+                <span>Simpson</span>
+            </button>
     }
 }
