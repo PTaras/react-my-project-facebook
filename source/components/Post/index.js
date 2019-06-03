@@ -17,7 +17,7 @@ export default class Post extends Component {
                         <a>{`${context.currentUserFirstName} ${context.currentUserLastName}`}</a>
                         &nbsp;
                         <time>{moment().format('MMMM DD hh:mm:ss')}</time>
-                        <p>Hello!</p>
+                        <p>Privet!</p>
                     </section>
                 )}
             </Consumer>
