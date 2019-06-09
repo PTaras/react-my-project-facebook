@@ -24,7 +24,6 @@ export default class Feed extends Component {
             { id: '123', comment: 'Hi there!', created: 1526825076849 },
             { id: '456', comment: 'Privet', created: 1526825076855 }
         ],
-        isPostGetting: false,
     };
 
     _creatPost (comment) {
@@ -40,7 +39,7 @@ export default class Feed extends Component {
     }
 
     render () {
-        const { posts, isPostGetting } = this.state;
+        const { posts } = this.state;
 
         const postsJSX = posts.map((post) => {
             return <Post key = { post.id } { ...post } />;
@@ -48,7 +47,7 @@ export default class Feed extends Component {
 
         return (
             <section className = { Styles.feed }>
-                <Spinner isSpinning = { isPostGetting } />
+                <Spinner isSpinning />
                 <StatusBar />
                 <Composer _creatPost = { this._creatPost } />
                 {postsJSX}
