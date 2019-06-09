@@ -1,6 +1,7 @@
 // Core
 import React, { Component } from 'react';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 
 //Components
 import { Consumer } from 'components/HOC/withProfile';
@@ -8,7 +9,14 @@ import { Consumer } from 'components/HOC/withProfile';
 //Instruments
 import Styles from './styles.m.css';
 export default class Post extends Component {
+    static propTypes = {
+        comment: PropTypes.string.isRequired,
+        created: PropTypes.number.isRequired,
+    };
+    
     render () {
+        const { comment, created } = this.props;
+
         return (
             <Consumer>
                 {(context) => (
@@ -16,8 +24,10 @@ export default class Post extends Component {
                         <img src = { context.avatar } />
                         <a>{`${context.currentUserFirstName} ${context.currentUserLastName}`}</a>
                         &nbsp;
-                        <time>{moment().format('MMMM DD hh:mm:ss')}</time>
-                        <p>Privet!</p>
+                        <time>
+                            {moment.unix(created).format('MMMM DD hh:mm:ss')}
+                        </time>
+                        <p>{comment}</p>
                     </section>
                 )}
             </Consumer>
