@@ -16,7 +16,7 @@ export default class Feed extends Component {
     constructor () {
         super();
 
-        this._creatPost = this._creatPost.bind(this);
+        this._createPost = this._createPost.bind(this);
     }
   
     state = {
@@ -24,14 +24,15 @@ export default class Feed extends Component {
             { id: '123', comment: 'Hi there!', created: 1526825076849 },
             { id: '456', comment: 'Privet', created: 1526825076855 }
         ],
+        isPostSpinning: false,
     };
 
-    _creatPost (comment) {
+    _createPost (comment) {
         const post = {
             id:      getUniqueID(),
             created: moment().utc(),
             comment,
-        };
+        }; 
 
         this.setState(({ posts }) => ({
             posts: [post, ...posts],
@@ -39,7 +40,7 @@ export default class Feed extends Component {
     }
 
     render () {
-        const { posts } = this.state;
+        const { posts, isPostSpinning } = this.state;
 
         const postsJSX = posts.map((post) => {
             return <Post key = { post.id } { ...post } />;
@@ -47,9 +48,9 @@ export default class Feed extends Component {
 
         return (
             <section className = { Styles.feed }>
-                <Spinner isSpinning />
+                <Spinner isSpinning = { isPostSpinning } />
                 <StatusBar />
-                <Composer _creatPost = { this._creatPost } />
+                <Composer _createPost = { this._createPost } />
                 {postsJSX}
             </section>
         );

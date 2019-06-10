@@ -38,7 +38,6 @@ export default class Composer extends Component {
     }
 
     _submitComment () {
-        event.preventDefault();
         const { comment } = this.state;
 
         if (!comment) {
@@ -70,7 +69,7 @@ export default class Composer extends Component {
                 {(context) => (
                     <section className = { Styles.composer }>
                         <img src = { context.avatar } />
-                        <form onSubmit = { this._submitComment }>
+                        <form onSubmit = { this._handleFormSubmit }>
                             <textarea 
                                 value = { comment }
                                 onChange = { this._updateComment }
