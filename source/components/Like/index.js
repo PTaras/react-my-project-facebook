@@ -105,7 +105,6 @@ export default class Like extends Component {
 
         return (
             <section className = { Styles.like }>
-                <span className = { Styles.cross }></span>
                 <span className = { likeStyles } onClick = { this._likePost }>like</span>
                 <div>
                 {likersList}
