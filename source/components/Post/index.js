@@ -11,20 +11,28 @@ import { Consumer } from 'components/HOC/withProfile';
 import Styles from './styles.m.css';
 export default class Post extends Component {
     static propTypes = {
-        comment:    string.isRequired,
-        created:    number.isRequired,
-        _likePost:  func.isRequired,
-        likes:      array.isRequired,
-        id:         string.isRequired,
+        comment:        string.isRequired,
+        created:        number.isRequired,
+        _removePost:    func.isRequired,
+        _likePost:      func.isRequired,
+        likes:          array.isRequired,
+        id:             string.isRequired,
     };
+
+    _removePost = () => {
+        const { _removePost, id } = this.props;
+
+        _removePost(id);
+    }
     
     render () {
-        const { comment, created, _likePost, id, likes } = this.props;
+        const { comment, created, _likePost, id, likes, } = this.props;
 
         return (
             <Consumer>
                 {(context) => (
                     <section className = { Styles.post }>
+                        <span className = { Styles.cross } onClick = { this._removePost } ></span>
                         <img src = { context.avatar } />
                         <a>{`${context.currentUserFirstName} ${context.currentUserLastName}`}</a>
                         &nbsp;

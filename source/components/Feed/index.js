@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 
 //Components
+import { withProfile } from 'components/HOC/withProfile';
 import StatusBar from 'components/StatusBar';
 import Composer from 'components/Composer';
 import Post from 'components/Post';
@@ -12,15 +13,8 @@ import Spinner from 'components/Spinner';
 import Styles from './styles.m.css';
 import { getUniqueID, delay } from 'instruments';
 
+@withProfile
 export default class Feed extends Component {
-    constructor () {
-        super();
-
-        this._createPost = this._createPost.bind(this);
-        this._setPostSpinningState = this._setPostSpinningState.bind(this);
-        this._likePost = this._likePost.bind(this);
-    }
-  
     state = {
         posts: [
             { id: '123', comment: 'Hi there!', created: 1526825076849, likes: [], },
@@ -29,13 +23,13 @@ export default class Feed extends Component {
         isPostSpinning: false,
     };
 
-    _setPostSpinningState (state) {
+    _setPostSpinningState = (state) => {
         this.setState({
             isPostSpinning: state,
         });
     }
 
-    async _createPost (comment) {
+    _createPost = async (comment) => {
         this._setPostSpinningState(true)
 
         const post = {
@@ -53,7 +47,7 @@ export default class Feed extends Component {
         }));
     }
 
-    async _likePost (id) {
+    _likePost = async (id) => {
         const { currentUserFirstName, currentUserLastName } = this.props;
 
         this._setPostSpinningState(true);
@@ -83,11 +77,24 @@ export default class Feed extends Component {
         });
     }
 
+     _removePost = async (id) => {
+
+        this._setPostSpinningState(true); 
+
+        await delay(1000);
+
+        this.setState({
+            posts: this.state.posts.filter((post) => post.id !== id), 
+                isPostSpinning: false, 
+        });
+    }
+
+
     render () {
         const { posts, isPostSpinning } = this.state;
 
         const postsJSX = posts.map((post) => {
-            return <Post key = { post.id } { ...post } _likePost = { this._likePost } />;
+            return <Post key = { post.id } { ...post } _likePost = { this._likePost } _removePost = { this._removePost } />;
         });
 
         return (
