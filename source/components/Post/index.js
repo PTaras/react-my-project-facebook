@@ -5,10 +5,11 @@ import { func, string, number, array } from 'prop-types';
 
 //Components
 import Like from 'components/Like';
-import { Consumer } from 'components/HOC/withProfile';
+import { withProfile } from 'components/HOC/withProfile';
 
 //Instruments
 import Styles from './styles.m.css';
+@withProfile
 export default class Post extends Component {
     static propTypes = {
         comment:        string.isRequired,
@@ -27,27 +28,23 @@ export default class Post extends Component {
     
     render () {
         const { comment, created, _likePost, id, likes, } = this.props;
+        const { avatar, currentUserFirstName, currentUserLastName } = this.props;
 
         return (
-            <Consumer>
-                {(context) => (
-                    <section className = { Styles.post }>
-                        <span className = { Styles.cross } onClick = { this._removePost } ></span>
-                        <img src = { context.avatar } />
-                        <a>{`${context.currentUserFirstName} ${context.currentUserLastName}`}</a>
-                        &nbsp;
-                        <time>
-                            {moment.unix(created).format('MMMM DD hh:mm:ss')}
-                        </time>
-                        <p>{comment}</p>
-                        <Like 
-                            id = { id } 
-                            likes ={ likes } 
-                            _likePost = { _likePost } 
-                            { ...context } /> 
-                    </section>
-                )}
-            </Consumer>
+            <section className = { Styles.post }>
+                <span className = { Styles.cross } onClick = { this._removePost } ></span>
+                <img src = { avatar } />
+                <a>{`${currentUserFirstName} ${currentUserLastName}`}</a>
+                &nbsp;
+                <time>
+                    {moment.unix(created).format('MMMM DD hh:mm:ss')}
+                </time>
+                <p>{comment}</p>
+                <Like 
+                    id = { id } 
+                    likes ={ likes } 
+                    _likePost = { _likePost } /> 
+            </section>
         );
     }
 }
