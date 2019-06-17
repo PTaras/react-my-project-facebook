@@ -11,8 +11,8 @@ import avatar from 'theme/assets/homer';
 
 const options = {
     avatar,
-    currentUserFirstName: 'Homer',
-    currentUserLastName:  'Simpson',
+    currentUserFirstName: 'Тарас',
+    currentUserLastName:  'Поцыкайло',
 };
 export default class App extends Component {
     render() {
