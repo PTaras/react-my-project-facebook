@@ -12,7 +12,7 @@ import Catcher from 'components/Catcher';
 //Instruments
 import Styles from './styles.m.css';
 import { api, TOKEN } from 'config/api';
-import { socket, GROUP_ID } from 'socket/init';
+import { socket, GROUP_ID, POST_ID } from 'socket/init';
 
 @withProfile
 export default class Feed extends Component {
@@ -27,7 +27,7 @@ export default class Feed extends Component {
 
         this._fetchPosts();
 
-        socket.emit('join', GROUP_ID);
+        socket.emit('join', GROUP_ID, POST_ID);
 
         socket.on('create', (postJSON) => {
             const { data: createdPost, meta } = JSON.parse(postJSON);
@@ -54,11 +54,25 @@ export default class Feed extends Component {
                 }));
             }
         });
+
+        socket.on('like', (postJSON) => {
+            const { data: likedPost, meta } = JSON.parse(postJSON);
+
+            if (
+                `${currentUserFirstName} ${currentUserLastName}` !==
+                `${meta.authorFirstName} ${meta.authorLastName}`
+            ) {
+                this.setState(({ likes }) =>({
+                    posts: [likedPost, ...likes],
+                }));
+            }
+        });
     }
 
     componentWillUnmount () {
        socket.removeListener('create');
        socket.removeListener('remove');
+       socket.removeListener('like');
     }
     
     _setPostSpinningState = (state) => {
@@ -102,10 +116,10 @@ export default class Feed extends Component {
         }));
     }
 
-    _likePost = async (id) => {
+    _likePost = async ( GROUP_ID) => {
         this._setPostSpinningState(true);
         
-        const response = await fetch(`${api}/${id}`, {
+        const response = await fetch(`${api}/${GROUP_ID}`, {
             method: 'PUT',
             headers: {
                 Authorization: TOKEN,
@@ -122,10 +136,10 @@ export default class Feed extends Component {
         }));
     };
 
-     _removePost = async (id) => {
+     _removePost = async (GROUP_ID) => {
         this._setPostSpinningState(true); 
 
-        await fetch(`${api}/${id}`, {
+        await fetch(`${api}/${GROUP_ID}`, {
                 method: 'DELETE',
                 headers: {
                     Authorization: TOKEN,
@@ -133,7 +147,7 @@ export default class Feed extends Component {
             });
 
         this.setState(({ posts }) => ({
-            posts:          posts.filter((post) => post.id !== id),
+            posts:          posts.filter((post) => post.id !== GROUP_ID),
             isPostSpinning: false,
         }));
     };
