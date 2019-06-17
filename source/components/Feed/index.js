@@ -8,26 +8,45 @@ import StatusBar from 'components/StatusBar';
 import Composer from 'components/Composer';
 import Post from 'components/Post';
 import Spinner from 'components/Spinner';
+import Catcher from 'components/Catcher';
 
 //Instruments
 import Styles from './styles.m.css';
 import { getUniqueID, delay } from 'instruments';
+import { api } from 'config/api';
+import { async } from 'q';
 
 @withProfile
 export default class Feed extends Component {
     state = {
-        posts: [
-            { id: '123', comment: 'Hi there!', created: 1526825076849, likes: [], },
-            { id: '456', comment: 'Privet', created: 1526825076855, likes: [], }
-        ],
+        posts: [],
         isPostSpinning: false,
     };
+
+    componentDidMount () {
+        this._fetchPosts();
+    }
 
     _setPostSpinningState = (state) => {
         this.setState({
             isPostSpinning: state,
         });
     }
+
+    _fetchPosts = async () => {
+        this._setPostSpinningState(true);
+
+        const reponse = await fetch(api, {
+            method: 'GET',
+        });
+
+        const { data: posts } = await reponse.json();
+
+        this.setState({
+            posts,
+            isPostSpinning: false,
+        });
+    };
 
     _createPost = async (comment) => {
         this._setPostSpinningState(true)
@@ -94,7 +113,15 @@ export default class Feed extends Component {
         const { posts, isPostSpinning } = this.state;
 
         const postsJSX = posts.map((post) => {
-            return <Post key = { post.id } { ...post } _likePost = { this._likePost } _removePost = { this._removePost } />;
+            return (
+                <Catcher key = { post.id }>
+                     <Post 
+                        { ...post } 
+                        _likePost = { this._likePost } 
+                        _removePost = { this._removePost } 
+                    />
+                </Catcher>
+            );
         });
 
         return (

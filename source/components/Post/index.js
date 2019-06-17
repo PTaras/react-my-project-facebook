@@ -26,28 +26,24 @@ export default class Post extends Component {
     }
     
     render () {
-        const { comment, created, _likePost, id, likes, } = this.props;
-
+        const { comment, created, _likePost, id, likes, firstName, lastName } = this.props;
+        
         return (
-            <Consumer>
-                {(context) => (
-                    <section className = { Styles.post }>
-                        <span className = { Styles.cross } onClick = { this._removePost } ></span>
-                        <img src = { context.avatar } />
-                        <a>{`${context.currentUserFirstName} ${context.currentUserLastName}`}</a>
-                        &nbsp;
-                        <time>
-                            {moment.unix(created).format('MMMM DD hh:mm:ss')}
-                        </time>
-                        <p>{comment}</p>
-                        <Like 
-                            id = { id } 
-                            likes ={ likes } 
-                            _likePost = { _likePost } 
-                            { ...context } /> 
-                    </section>
-                )}
-            </Consumer>
+            <section className = { Styles.post }>
+                <span className = { Styles.cross } onClick = { this._removePost } ></span>
+                <img src = { avatar } />
+                <a>{`${firstName} ${lastName}`}</a>
+                &nbsp;
+                <time>
+                    {moment.unix(created).format('MMMM DD hh:mm:ss')}
+                </time>
+                <p>{comment}</p>
+                <Like 
+                    id = { id } 
+                    likes ={ likes } 
+                    _likePost = { _likePost } 
+                />
+            </section>
         );
     }
 }
