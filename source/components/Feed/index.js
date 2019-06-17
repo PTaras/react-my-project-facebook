@@ -36,7 +36,7 @@ export default class Feed extends Component {
                 `${currentUserFirstName} ${currentUserLastName}` !==
                 `${meta.authorFirstName} ${meta.authorLastName}`
             ) {
-                this.setState(({ posts }) =>({
+                this.setState(({ posts }) => ({
                     posts: [createdPost, ...posts],
                 }));
             }
@@ -49,7 +49,7 @@ export default class Feed extends Component {
                 `${currentUserFirstName} ${currentUserLastName}` !==
                 `${meta.authorFirstName} ${meta.authorLastName}`
             ) {
-                this.setState(({ posts }) =>({
+                this.setState(({ posts }) => ({
                     posts: posts.filter((post) => post.id !== removedPost.id),
                 }));
             }
@@ -62,8 +62,21 @@ export default class Feed extends Component {
                 `${currentUserFirstName} ${currentUserLastName}` !==
                 `${meta.authorFirstName} ${meta.authorLastName}`
             ) {
-                this.setState(({ likes }) =>({
+                this.setState(({ likes }) => ({
                     posts: [likedPost, ...likes],
+                }));
+            }
+        });
+
+        socket.on('unlike', (postJSON) => {
+            const { data: unlikePost, meta } = JSON.parse(postJSON);
+
+            if (
+                `${currentUserFirstName} ${currentUserLastName}` !==
+                `${meta.authorFirstName} ${meta.authorLastName}`
+            ) {
+                this.setState(({ likes }) => ({
+                    posts: [unlikePost, ...likes],
                 }));
             }
         });
@@ -73,6 +86,7 @@ export default class Feed extends Component {
        socket.removeListener('create');
        socket.removeListener('remove');
        socket.removeListener('like');
+       socket.removeListener('unlike');
     }
     
     _setPostSpinningState = (state) => {
@@ -116,7 +130,7 @@ export default class Feed extends Component {
         }));
     }
 
-    _likePost = async ( GROUP_ID) => {
+    _likePost = async ( GROUP_ID ) => {
         this._setPostSpinningState(true);
         
         const response = await fetch(`${api}/${GROUP_ID}`, {
@@ -132,6 +146,22 @@ export default class Feed extends Component {
             posts: posts.map(
                 (post) => post.id === likePost.id ? likePost : post,
             ),
+            isPostSpinning: false,
+        }));
+    };
+
+    _unlikePost = async ( GROUP_ID ) => {
+        this._setPostSpinningState(true);
+        
+        await fetch(`${api}/${GROUP_ID}`, {
+            method: 'PUT',
+            headers: {
+                Authorization: TOKEN,
+            },
+        });
+
+        this.setState(({ posts }) => ({
+            posts:          posts.filter((post) => post.id !== GROUP_ID),
             isPostSpinning: false,
         }));
     };
