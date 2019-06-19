@@ -56,27 +56,16 @@ export default class Feed extends Component {
         });
 
         socket.on('like', (postJSON) => {
-            const { data: likedPost, meta } = JSON.parse(postJSON);
+            const { data: likePost, meta } = JSON.parse(postJSON);
 
             if (
                 `${currentUserFirstName} ${currentUserLastName}` !==
                 `${meta.authorFirstName} ${meta.authorLastName}`
             ) {
-                this.setState(({ likes }) => ({
-                    posts: [likedPost, ...likes],
-                }));
-            }
-        });
-
-        socket.on('unlike', (postJSON) => {
-            const { data: unlikePost, meta } = JSON.parse(postJSON);
-
-            if (
-                `${currentUserFirstName} ${currentUserLastName}` !==
-                `${meta.authorFirstName} ${meta.authorLastName}`
-            ) {
-                this.setState(({ likes }) => ({
-                    posts: [unlikePost, ...likes],
+                this.setState(({ posts }) => ({
+                    posts: posts.map(
+                        (post) => post.id === likePost.id ? likePost : post,
+                    ),
                 }));
             }
         });
@@ -146,22 +135,6 @@ export default class Feed extends Component {
             posts: posts.map(
                 (post) => post.id === likePost.id ? likePost : post,
             ),
-            isPostSpinning: false,
-        }));
-    };
-
-    _unlikePost = async ( GROUP_ID ) => {
-        this._setPostSpinningState(true);
-        
-        await fetch(`${api}/${GROUP_ID}`, {
-            method: 'PUT',
-            headers: {
-                Authorization: TOKEN,
-            },
-        });
-
-        this.setState(({ posts }) => ({
-            posts:          posts.filter((post) => post.id !== GROUP_ID),
             isPostSpinning: false,
         }));
     };
