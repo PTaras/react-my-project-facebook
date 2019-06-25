@@ -1,6 +1,6 @@
 // Core
 import React, { Component } from 'react';
-import { Transition } from 'react-transition-group';
+import { Transition, CSSTransition, TransitionGroup } from 'react-transition-group';
 import { fromTo } from 'gsap';
 
 //Components
@@ -142,8 +142,8 @@ export default class Feed extends Component {
         }));
     };
 
-     _removePost = async (GROUP_ID) => {
-        this._setPostSpinningState(true); 
+     _removePost = async ( GROUP_ID ) => {
+        this._setPostSpinningState(true);
 
         await fetch(`${api}/${GROUP_ID}`, {
                 method: 'DELETE',
@@ -167,18 +167,39 @@ export default class Feed extends Component {
             );
     };
 
+    _animatePostmanEnter = (Postman) => {
+        fromTo(Postman, 2, { opacity: 0, x: 500 }, { opacity: 1, x: 0 })
+    };
+    
+    _animatePostmanExit = (Postman) => {
+        fromTo(Postman, 2, { opacity: 1, x: 0 }, { opacity: 0, x: 500 })
+    };
+
     render () {
         const { posts, isPostSpinning } = this.state;
 
         const postsJSX = posts.map((post) => {
             return (
-                <Catcher key = { post.id }>
-                     <Post 
-                        { ...post } 
-                        _likePost = { this._likePost } 
-                        _removePost = { this._removePost } 
-                    />
-                </Catcher>
+                <CSSTransition
+                    classNames = { {
+                        enter:       Styles.postInStart,
+                        enterActive: Styles.postInEnd,
+                        exit:        Styles.postOutStart,
+                        exitActive:  Styles.postOutEnd,
+                    } }
+                    key = { post.id } 
+                    timeout = { {
+                        enter: 500,
+                        exit:  600,
+                    } }>
+                    <Catcher>
+                        <Post 
+                            { ...post } 
+                            _likePost = { this._likePost } 
+                            _removePost = { this._removePost } 
+                        />
+                    </Catcher>
+                </CSSTransition>
             );
         });
 
@@ -193,8 +214,15 @@ export default class Feed extends Component {
                     onEnter = { this._animateComposerEnter }>
                     <Composer _createPost = { this._createPost } />
                 </Transition>
-                <Postman />
-                {postsJSX}
+                <Transition
+                    appear 
+                    in 
+                    timeout = { 5000 }
+                    onEnter = { this._animatePostmanEnter }
+                    onEntered = { this._animatePostmanExit }>
+                    <Postman />
+                </Transition>
+                <TransitionGroup>{postsJSX}</TransitionGroup>
             </section>
         );
     }
